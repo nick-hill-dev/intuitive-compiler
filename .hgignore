@@ -7,3 +7,6 @@ S-Generate.bat
 *.user
 obj
 bin
+.vs
+Compiler.js
+Compiler.js.map
