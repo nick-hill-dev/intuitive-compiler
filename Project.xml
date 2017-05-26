@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Program Files (x86)\PowerBuild 2.0\Project.xsd" SchemaVersion="0">
+  <ProjectID>3fd37c1c-32db-4048-a0f8-b923065e5d30</ProjectID>
+  <ProjectName>Javascript.Compiler</ProjectName>
+  <Dependencies />
+</Project>
