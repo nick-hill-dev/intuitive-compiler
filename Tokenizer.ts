@@ -5,7 +5,7 @@
         private startState: State = null;
 
         constructor() {
-            var builder = new StateBuilder();
+            let builder = new StateBuilder();
             this.register(builder);
             this.startState = builder.data;
         }
@@ -15,13 +15,13 @@
         public tokenize(text: string): TokenQueue {
 
             // Initialize a DFA parser
-            var result = new TokenQueue();
-            var state = this.startState;
-            var position = 0;
-            var nextValue = '';
-            var endOfInput = text.length == 0;
+            let result = new TokenQueue();
+            let state = this.startState;
+            let position = 0;
+            let nextValue = '';
+            let endOfInput = text.length == 0;
             while (position <= text.length) {
-                var character = endOfInput ? '' : text[position];
+                let character = endOfInput ? '' : text[position];
 
                 // Exit if we're in the start state and we've reached the end of the input
                 if (state == this.startState && endOfInput) {
@@ -29,8 +29,8 @@
                 }
 
                 // Find out which transition to use
-                var transitionToUse = <Transition>null;
-                for (var transition of state.transitions) {
+                let transitionToUse = <Transition>null;
+                for (let transition of state.transitions) {
                     if (transition.handles(character)) {
                         transitionToUse = transition;
                         break;
@@ -59,14 +59,14 @@
 
                 // Does this result in a token?
                 if (transitionToUse.tokenType != -1) {
-                    var token = new Token(transitionToUse.tokenType, nextValue);
+                    let token = new Token(transitionToUse.tokenType, nextValue);
                     result.tokens.push(token);
                     state = this.startState;
                     nextValue = '';
                 } else {
 
                     // Move on to the next state
-                    state = transition.nextState;
+                    state = transitionToUse.nextState;
                     if (state == null) {
                         throw 'Transition does not lead to a next state.';
                     }
