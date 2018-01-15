@@ -56,6 +56,16 @@
             }
         }
 
+        public filter(f: (t: Token) => boolean): TokenQueue {
+            var newQueue = new TokenQueue();
+            for (var token of this.tokens) {
+                if (!f(token)) {
+                    newQueue.tokens.push(token);
+                }
+            }
+            return newQueue;
+        }
+
     }
 
 }
