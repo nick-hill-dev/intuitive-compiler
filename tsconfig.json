@@ -1,0 +1,20 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es5",
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "module": "none",
+    "removeComments": false,
+    "sourceRoot": "./src/",
+    "rootDir": "./src/",
+    "outDir": "./bin/",
+    "outFile": "./bin/compiler.js",
+    "noEmitOnError": true,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  }
+}
