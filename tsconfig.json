@@ -1,13 +1,13 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2021",
     "noImplicitAny": false,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "module": "none",
     "removeComments": false,
-    "sourceRoot": "./src/",
+    "sourceRoot": "../src",
     "rootDir": "./src/",
     "outDir": "./bin/",
     "outFile": "./bin/compiler.js",
