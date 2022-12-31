@@ -2,7 +2,7 @@
 
     export class TokenQueue {
 
-        public tokens: Array<Token> = [];
+        public tokens: Token[] = [];
 
         public position: number = 0;
 
@@ -31,6 +31,14 @@
             return token === null ? null : token.value;
         }
 
+        public peekIs(checkType: number, checkValue: string, caseSensitive: boolean = true): boolean {
+            let token = this.peek();
+            if (token === null) {
+                return false;
+            }
+            return token.type === checkType && (caseSensitive ? token.value === checkValue : token.value.toLowerCase() == checkValue.toLowerCase());
+        }
+
         public next(expectedType: number = -1): Token {
             let token = this.peek(expectedType);
             this.position++;
@@ -45,6 +53,14 @@
         public nextValue(expectedType: number = -1): string {
             let token = this.next(expectedType);
             return token === null ? null : token.value;
+        }
+
+        public nextIs(checkType: number, checkValue: string, caseSensitive: boolean = true): boolean {
+            if (this.peekIs(checkType, checkValue, caseSensitive)) {
+                this.next();
+                return true;
+            }
+            return false;
         }
 
         public expect(expectedType: number, expectedValue: string = null, caseSensitive: boolean = true) {
@@ -71,8 +87,8 @@
         }
 
         public filter(f: (t: Token) => boolean): TokenQueue {
-            var newQueue = new TokenQueue();
-            for (var token of this.tokens) {
+            let newQueue = new TokenQueue();
+            for (let token of this.tokens) {
                 if (!f(token)) {
                     newQueue.tokens.push(token);
                 }
