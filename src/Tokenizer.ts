@@ -1,5 +1,9 @@
 ﻿module Compiler {
 
+    /**
+     * Create a class that extends this one to create your own custom code tokenizer. The generic argument `T` is your token type
+     * (I.E. a string, a number, an enum or whatever you want it to be) which uniquely identifies each type of token.
+     */
     export abstract class Tokenizer<T> {
 
         private startState: State<T> = null;
@@ -10,8 +14,21 @@
             this.startState = builder.data;
         }
 
+        /**
+         * Implement this method to build your tokenizer using a fluent interface.
+         * Example: `let inNumber = start.whenNumber().thenNewState();` allows transitions from the initial state to the `inNumber` state when a number is encountered.
+         * Then, `inNumber.whenNumber().thenSameState();` causes the state to remain the same as numbers continue to be encountered.
+         * Then, `inNumber.whenAnything().ignore(true).returns('number');` completes a number of type 'token', rewinding back one character so that a new token can be read (since that character is not part of the number).
+         * See the documentation, examples and demos for inspiration.
+         * @param start The start state, a clean slate for each token.
+         */
         protected abstract register(start: StateBuilder<T>): void;
 
+        /**
+         * Converts text into tokens as per the state machine defined in `register()`.
+         * @param text The code to tokenize.
+         * @returns A `TokenQueue`, which is a list of tokens representing the input code `text`.
+         */
         public tokenize(text: string): TokenQueue<T> {
 
             // Initialize a DFA parser
