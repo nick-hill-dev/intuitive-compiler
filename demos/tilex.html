@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>TileX Scripting Example - Compiler Demos</title>
+    <script src="../bin/compiler.js"></script>
+</head>
+
+<body>
+    <!--
+        This example is based on a real-world use case where a scripting language has been invented for a multiplayer game called Spinning World.
+    -->
+    <script>
+        window.onload = () => {
+
+            class ScriptTokenizer extends Compiler.Tokenizer {
+
+                register(start) {
+
+                    // Transitions from start state
+                    let inNumber = start.whenNumber().thenNewState();
+                    let inString = start.when('"').ignore().thenNewState();
+                    let inIdentifier = start.whenLetter().thenNewState();
+                    start.when('(').returns('openBracket');
+                    start.when(')').returns('closeBracket');
+                    start.when(',').returns('comma');
+                    start.when('=').returns('equals');
+                    let inLessThan = start.when('<').thenNewState();
+                    let inMoreThan = start.when('>').thenNewState();
+                    let inPossibleNegativeNumber = start.when('-').thenNewState();
+                    start.when('*').returns('multiply');
+                    let inPossibleComment = start.when('/').thenNewState();
+                    start.when('+').returns('plus');
+                    start.when('\n').returns('newLine');
+                    start.when(' \r\t').ignore().thenSameState();
+
+                    // Transitions from inPossibleNegativeNumber state
+                    inPossibleNegativeNumber.whenNumber().then(inNumber);
+                    inPossibleNegativeNumber.whenAnything().ignore(true).returns('minus');
+
+                    // Transitions from inNumber state
+                    inNumber.whenNumber().thenSameState();
+                    let inRangeInt = inNumber.when(':').thenNewState();
+                    let inFloat = inNumber.when('.').thenNewState();
+                    inNumber.whenAnything().ignore(true).returns('number');
+
+                    // Transitions from inFloat state
+                    inFloat.whenNumber().thenSameState();
+                    inFloat.when('-').thenSameState();
+                    let inRangeFloat = inFloat.when(':').thenNewState();
+                    inFloat.whenAnything().ignore(true).returns('number');
+
+                    // Transitions from inRangeInt state
+                    inRangeInt.whenNumber().thenSameState();
+                    inRangeInt.when('-').thenSameState();
+                    inRangeInt.when('.').then(inRangeFloat);
+                    inRangeInt.whenAnything().ignore(true).returns('rangeInt');
+
+                    // Transitions from inRangeFloat state
+                    inRangeFloat.whenNumber().thenSameState();
+                    inRangeFloat.when('-').thenSameState();
+                    inRangeFloat.when('.').thenSameState();
+                    inRangeFloat.whenAnything().ignore(true).returns('rangeFloat');
+
+                    // Transitions from inString state
+                    inString.whenInputEnds().error('Expected string to end with a quote character.');
+                    inString.when('"').ignore().returns('string');
+                    let inStringEscaped = inString.when('\\').ignore().thenNewState();
+                    inString.whenAnything().thenSameState();
+
+                    // Transitions from inStringEscaped
+                    inStringEscaped.when('"').then(inString);
+                    inStringEscaped.when('\\').then(inString);
+                    inStringEscaped.whenAnything().error('Invalid escape sequence in a string.');
+
+                    // Transitions from inIdentifier state
+                    inIdentifier.whenLetterOrNumber().thenSameState();
+                    inIdentifier.when('.-').thenSameState();
+                    inIdentifier.whenAnything().ignore(true).returns('identifier');
+
+                    // Transitions from inLessThan state
+                    inLessThan.when('=').returns('lessThanOrEquals');
+                    inLessThan.whenAnything().ignore(true).returns('lessThan');
+
+                    // Transitions from inMoreThan state
+                    inMoreThan.when('=').returns('moreThanOrEquals');
+                    inMoreThan.whenAnything().ignore(true).returns('moreThan');
+
+                    // Transitions from inPossibleComment state
+                    let inComment = inPossibleComment.when('/').thenNewState();
+                    inPossibleComment.whenAnything().ignore(true).returns('divide');
+
+                    // Transitions from inComment state
+                    inComment.when('\r').ignore();
+                    inComment.when('\n').ignore().returns('comment');
+                    inComment.whenAnything().thenSameState();
+                }
+
+            }
+
+            let compiler = new ScriptTokenizer();
+            let result = compiler.tokenize(`
+                spawn "destroyedBlock", 1, 0:1, 0, 0, 500:1250, 0, 0.25:0.5, -5:5, -10:-3
+                spawn "destroyedBlock", 1, 0:1, 24, 0, 500:1250, 0, 0.25:0.5, -5:5, -10:-3
+                spawn "destroyedBlock", 1, 0:1, 0, 24, 500:1250, 0, 0.25:0.5, -5:5, -10:-3
+                spawn "destroyedBlock", 1, 0:1, 24, 24, 500:1250, 0, 0.25:0.5, -5:5, -10:-3
+                if speedY > 0 then begin
+                    speed "vertical", -500
+                    speed "horizontal", 0
+                end
+                if speedX < 0 then speed "horizontal", 0
+                sound "tileSmash"
+            `.trim());
+
+            for (let line of result.tokens.map(t => t.type.padStart(14, ' ') + ': ' + t.value.replace('\n', '{newline}'))) {
+                let p = document.createElement('pre');
+                p.innerText = line;
+                p.style.lineHeight = 0.2;
+                document.body.appendChild(p);
+            }
+
+            /*
+            identifier: spawn
+                string: destroyedBlock
+                 comma: ,
+                number: 1
+                        ...etc
+            */
+        };
+    </script>
+</body>
+
+</html>
