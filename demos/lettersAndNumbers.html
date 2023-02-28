@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Letters and Numbers Example - Compiler Demos</title>
+    <script src="../bin/compiler.js"></script>
+</head>
+
+<body>
+    <script>
+        window.onload = () => {
+
+            class LettersAndNumbersTokenizer extends Compiler.Tokenizer {
+
+                register(start) {
+                    let inWord = start.whenLetter().thenNewState();
+                    let inNumber = start.whenNumber().thenNewState();
+                    start.whenAnything().error('Only letters and numbers are permitted.');
+
+                    inWord.whenLetter().thenSameState();
+                    inWord.whenAnything().ignore(true).returns(1);
+
+                    inNumber.whenNumber().thenSameState();
+                    inNumber.whenAnything().ignore(true).returns(2);
+                }
+
+            }
+
+            let compiler = new LettersAndNumbersTokenizer();
+            let result = compiler.tokenize('ABC123xyz890');
+            alert(JSON.stringify(result.tokens.map(t => t.value))); // [ "ABC", "123", "xyz", "890" ]
+
+            compiler.tokenize('1-1'); // Error: "Only letters and numbers are permitted."
+        };
+    </script>
+</body>
+
+</html>

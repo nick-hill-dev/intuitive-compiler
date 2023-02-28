@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Basic User ID Example - Compiler Demos</title>
+    <script src="../bin/compiler.js"></script>
+</head>
+
+<body>
+    <script>
+        window.onload = () => {
+
+            class UserIdTokenizer extends Compiler.Tokenizer {
+
+                register(start) {
+                    let inCodeFirstPart = start.when('C').thenNewState();
+                    start.whenAnything().error('User ID must start with "C".');
+
+                    inCodeFirstPart.whenNumber().thenSameState();
+                    let inCodeLastPart = inCodeFirstPart.when('-').thenNewState();
+                    start.whenAnything().error('User ID must start with "C" character and have some numbers after it, before a dash.');
+                    
+                    inCodeLastPart.whenNumber().thenSameState();
+                    inCodeLastPart.whenAnything().returns(1);
+                }
+
+            }
+
+            let compiler = new UserIdTokenizer();
+            let result = compiler.tokenize('C123-99');
+            alert(JSON.stringify(result.tokens)); // [ { "type": 1, "value": "C123-99" } ]
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Letters and Numbers Example - Compiler Demos</title>
+    <script src="../bin/compiler.js"></script>
+</head>
+
+<body>
+    <script>
+        window.onload = () => {
+
+            class FunctionTokenizer extends Compiler.Tokenizer {
+
+                register(start) {
+                    let inIdentifier = start.whenLetter().thenNewState();
+                    let inNumber = start.whenNumber().thenNewState();
+                    start.when('{').returns('leftCurly');
+                    start.when('}').returns('rightCurly');
+                    start.when('(').returns('leftBracket');
+                    start.when(')').returns('rightBracket');
+                    start.when(';').returns('semiColon');
+                    start.when(' ').ignore().thenSameState();
+                    start.whenAnything().error('Cannot parse.');
+
+                    inIdentifier.whenLetter().thenSameState();
+                    inIdentifier.whenAnything().ignore(true).returns('identifier');
+
+                    inNumber.whenNumber().thenSameState();
+                    inNumber.whenAnything().ignore(true).returns('number');
+                }
+
+            }
+
+            let compiler = new FunctionTokenizer();
+            let result = compiler.tokenize('function helloWorld() { return 123; }');
+            alert(JSON.stringify(result.tokens));
+
+            /*
+            [
+                { "type": "identifier", "value": "function" },
+                { "type": "identifier", "value": "helloWorld" },
+                { "type": "leftBracket", "value": "(" },
+                { "type": "rightBracket", "value": ")" },
+                { "type": "leftCurly", "value": "{" },
+                { "type": "identifier", "value": "return" },
+                { "type": "number", "value": "123" },
+                { "type": "semiColon", "value": ";" },
+                { "type": "rightCurly", "value": "}" }
+            ]
+            */
+        };
+    </script>
+</body>
+
+</html>
