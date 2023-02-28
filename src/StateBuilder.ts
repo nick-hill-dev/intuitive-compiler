@@ -1,38 +1,38 @@
 ﻿module Compiler {
 
-    export class StateBuilder {
+    export class StateBuilder<T> {
 
-        public data: State = new State();
+        public data: State<T> = new State<T>();
 
-        public whenInputEnds(): TransitionBuilder {
+        public whenInputEnds(): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.endOfInput, '');
         }
 
-        public when(characters: string): TransitionBuilder {
+        public when(characters: string): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.custom, characters);
         }
 
-        public whenLowerCaseLetter(): TransitionBuilder {
+        public whenLowerCaseLetter(): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.lowerCaseLetter, '');
         }
 
-        public whenUpperCaseLetter(): TransitionBuilder {
+        public whenUpperCaseLetter(): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.upperCaseLetter, '');
         }
 
-        public whenLetter(): TransitionBuilder {
+        public whenLetter(): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.letter, '');
         }
 
-        public whenNumber(): TransitionBuilder {
+        public whenNumber(): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.number, '');
         }
 
-        public whenLetterOrNumber(): TransitionBuilder {
+        public whenLetterOrNumber(): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.letterOrNumber, '');
         }
 
-        public whenAnything(): TransitionBuilder {
+        public whenAnything(): TransitionBuilder<T> {
             return new TransitionBuilder(this, CharacterClass.any, '');
         }
 

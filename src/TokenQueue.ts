@@ -1,8 +1,8 @@
 ﻿module Compiler {
 
-    export class TokenQueue {
+    export class TokenQueue<T> {
 
-        public tokens: Token[] = [];
+        public tokens: Token<T>[] = [];
 
         public position: number = 0;
 
@@ -10,28 +10,28 @@
             this.position = 0;
         }
 
-        public peek(expectedType: number = -1): Token {
+        public peek(expectedType: T = undefined): Token<T> {
             if (this.position >= this.tokens.length) {
                 return null;
             }
             let token = this.tokens[this.position];
-            if (expectedType !== -1 && token.type !== expectedType) {
+            if (expectedType !== undefined && token.type !== expectedType) {
                 throw 'Unexpected token: \'' + token.value + '\'.';
             }
             return token;
         }
 
-        public peekType(expectedType: number = -1): number {
+        public peekType(expectedType: T = undefined): T {
             let token = this.peek(expectedType);
-            return token === null ? -1 : token.type;
+            return token === null ? undefined : token.type;
         }
 
-        public peekValue(expectedType: number = -1): string {
+        public peekValue(expectedType: T = undefined): string {
             let token = this.peek(expectedType);
             return token === null ? null : token.value;
         }
 
-        public peekIs(checkType: number, checkValue: string, caseSensitive: boolean = true): boolean {
+        public peekIs(checkType: T, checkValue: string, caseSensitive: boolean = true): boolean {
             let token = this.peek();
             if (token === null) {
                 return false;
@@ -39,23 +39,23 @@
             return token.type === checkType && (caseSensitive ? token.value === checkValue : token.value.toLowerCase() === checkValue.toLowerCase());
         }
 
-        public next(expectedType: number = -1): Token {
+        public next(expectedType: T = undefined): Token<T> {
             let token = this.peek(expectedType);
             this.position++;
             return token;
         }
 
-        public nextType(expectedType: number = -1): number {
+        public nextType(expectedType: T = undefined): T {
             let token = this.next(expectedType);
-            return token === null ? -1 : token.type;
+            return token === null ? undefined : token.type;
         }
 
-        public nextValue(expectedType: number = -1): string {
+        public nextValue(expectedType: T = undefined): string {
             let token = this.next(expectedType);
             return token === null ? null : token.value;
         }
 
-        public nextIs(checkType: number, checkValue: string, caseSensitive: boolean = true): boolean {
+        public nextIs(checkType: T, checkValue: string, caseSensitive: boolean = true): boolean {
             if (this.peekIs(checkType, checkValue, caseSensitive)) {
                 this.next();
                 return true;
@@ -63,7 +63,7 @@
             return false;
         }
 
-        public expect(expectedType: number, expectedValue: string = null, caseSensitive: boolean = true) {
+        public expect(expectedType: T, expectedValue: string = null, caseSensitive: boolean = true) {
             let token = this.next(expectedType);
             if (expectedValue !== null) {
                 let valueMatches = caseSensitive
@@ -75,9 +75,9 @@
             }
         }
 
-        public expectTypes(...expectedTypes: number[]) {
+        public expectTypes(...expectedTypes: T[]) {
             let token = this.next();
-            let tokenType = token?.type ?? -1;
+            let tokenType = token?.type ?? undefined;
             for (let expectedType of expectedTypes) {
                 if (tokenType === expectedType) {
                     return;
@@ -86,8 +86,8 @@
             throw 'Unexpected token value: ' + token?.value ?? 'EOF';
         }
 
-        public filter(f: (t: Token) => boolean): TokenQueue {
-            let newQueue = new TokenQueue();
+        public filter(f: (t: Token<T>) => boolean): TokenQueue<T> {
+            let newQueue = new TokenQueue<T>();
             for (let token of this.tokens) {
                 if (!f(token)) {
                     newQueue.tokens.push(token);

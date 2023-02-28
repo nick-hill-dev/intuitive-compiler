@@ -1,14 +1,14 @@
 ﻿module Compiler {
 
-    export class Token {
+    export class Token<T> {
 
         public constructor(
-            public readonly type: number,
+            public readonly type: T,
             public readonly value: string
         ) {
         }
 
-        public is(type: number, value: string) {
+        public is(type: T, value: string) {
             return this.type === type && this.value === value;
         }
 

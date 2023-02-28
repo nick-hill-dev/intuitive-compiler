@@ -1,8 +1,8 @@
 ﻿module Compiler {
 
-    export class State {
+    export class State<T> {
 
-        public transitions: Array<Transition> = [];
+        public transitions: Array<Transition<T>> = [];
 
     }
 

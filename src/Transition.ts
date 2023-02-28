@@ -1,6 +1,6 @@
 ﻿module Compiler {
 
-    export class Transition {
+    export class Transition<T> {
 
         public type: CharacterClass = CharacterClass.any;
 
@@ -10,9 +10,9 @@
 
         public reread: boolean = false;
 
-        public nextState: State = null;
+        public nextState: State<T> = null;
 
-        public tokenType: number = -1;
+        public tokenType: T = undefined;
 
         public errorMessage: string = '';
 

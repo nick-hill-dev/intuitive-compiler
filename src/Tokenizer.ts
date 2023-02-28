@@ -1,21 +1,21 @@
 ﻿module Compiler {
 
-    export abstract class Tokenizer {
+    export abstract class Tokenizer<T> {
 
-        private startState: State = null;
+        private startState: State<T> = null;
 
         public constructor() {
-            let builder = new StateBuilder();
+            let builder = new StateBuilder<T>();
             this.register(builder);
             this.startState = builder.data;
         }
 
-        protected abstract register(start: StateBuilder);
+        protected abstract register(start: StateBuilder<T>): void;
 
-        public tokenize(text: string): TokenQueue {
+        public tokenize(text: string): TokenQueue<T> {
 
             // Initialize a DFA parser
-            let result = new TokenQueue();
+            let result = new TokenQueue<T>();
             let state = this.startState;
             let position = 0;
             let nextValue = '';
@@ -29,7 +29,7 @@
                 }
 
                 // Find out which transition to use
-                let transitionToUse = <Transition>null;
+                let transitionToUse = <Transition<T>>null;
                 for (let transition of state.transitions) {
                     if (transition.handles(character)) {
                         transitionToUse = transition;
@@ -58,8 +58,8 @@
                 }
 
                 // Does this result in a token?
-                if (transitionToUse.tokenType !== -1) {
-                    let token = new Token(transitionToUse.tokenType, nextValue);
+                if (transitionToUse.tokenType !== undefined) {
+                    let token = new Token<T>(transitionToUse.tokenType, nextValue);
                     result.tokens.push(token);
                     state = this.startState;
                     nextValue = '';
