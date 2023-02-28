@@ -4,10 +4,7 @@
 
         public data: Transition = new Transition();
 
-        private state: StateBuilder = null;
-
-        constructor(state: StateBuilder, type: CharacterClass, characters: string) {
-            this.state = state;
+        public constructor(private readonly state: StateBuilder, type: CharacterClass, characters: string) {
             this.state.data.transitions.push(this.data);
             this.data.type = type;
             this.data.characters = characters;

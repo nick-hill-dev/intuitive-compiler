@@ -36,7 +36,7 @@
             if (token === null) {
                 return false;
             }
-            return token.type === checkType && (caseSensitive ? token.value === checkValue : token.value.toLowerCase() == checkValue.toLowerCase());
+            return token.type === checkType && (caseSensitive ? token.value === checkValue : token.value.toLowerCase() === checkValue.toLowerCase());
         }
 
         public next(expectedType: number = -1): Token {

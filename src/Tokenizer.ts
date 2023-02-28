@@ -4,7 +4,7 @@
 
         private startState: State = null;
 
-        constructor() {
+        public constructor() {
             let builder = new StateBuilder();
             this.register(builder);
             this.startState = builder.data;
@@ -19,12 +19,12 @@
             let state = this.startState;
             let position = 0;
             let nextValue = '';
-            let endOfInput = text.length == 0;
+            let endOfInput = text.length === 0;
             while (position <= text.length) {
                 let character = endOfInput ? '' : text[position];
 
                 // Exit if we're in the start state and we've reached the end of the input
-                if (state == this.startState && endOfInput) {
+                if (state === this.startState && endOfInput) {
                     break;
                 }
 
@@ -38,12 +38,12 @@
                 }
 
                 // Did we find a suitable transition?
-                if (transitionToUse == null) {
+                if (transitionToUse === null) {
                     throw 'No suitable transition found for character: \'' + character + '\'.';
                 }
 
                 // Should we error?
-                if (transitionToUse.errorMessage != '') {
+                if (transitionToUse.errorMessage !== '') {
                     throw transitionToUse.errorMessage;
                 }
 
@@ -58,7 +58,7 @@
                 }
 
                 // Does this result in a token?
-                if (transitionToUse.tokenType != -1) {
+                if (transitionToUse.tokenType !== -1) {
                     let token = new Token(transitionToUse.tokenType, nextValue);
                     result.tokens.push(token);
                     state = this.startState;
@@ -67,7 +67,7 @@
 
                     // Move on to the next state
                     state = transitionToUse.nextState;
-                    if (state == null) {
+                    if (state === null) {
                         throw 'Transition does not lead to a next state.';
                     }
                 }

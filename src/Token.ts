@@ -2,19 +2,16 @@
 
     export class Token {
 
-        public type: number = -1;
-
-        public value: string = '';
-
-        constructor(type: number, value: string) {
-            this.type = type;
-            this.value = value;
+        public constructor(
+            public readonly type: number,
+            public readonly value: string
+        ) {
         }
 
         public is(type: number, value: string) {
-            return this.type == type && this.value == value;
+            return this.type === type && this.value === value;
         }
-        
+
     }
 
 }

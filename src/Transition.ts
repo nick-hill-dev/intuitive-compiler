@@ -17,22 +17,22 @@
         public errorMessage: string = '';
 
         public handles(character: string) {
-            if (this.type == CharacterClass.any) {
+            if (this.type === CharacterClass.any) {
                 return true;
             }
-            if (character == '') {
-                return this.type == CharacterClass.endOfInput;
+            if (character === '') {
+                return this.type === CharacterClass.endOfInput;
             }
-            if (character >= 'a' && character <= 'z' && (this.type == CharacterClass.letterOrNumber || this.type == CharacterClass.letter || this.type == CharacterClass.lowerCaseLetter)) {
+            if (character >= 'a' && character <= 'z' && (this.type === CharacterClass.letterOrNumber || this.type === CharacterClass.letter || this.type === CharacterClass.lowerCaseLetter)) {
                 return true;
             }
-            if (character >= 'A' && character <= 'Z' && (this.type == CharacterClass.letterOrNumber || this.type == CharacterClass.letter || this.type == CharacterClass.upperCaseLetter)) {
+            if (character >= 'A' && character <= 'Z' && (this.type === CharacterClass.letterOrNumber || this.type === CharacterClass.letter || this.type === CharacterClass.upperCaseLetter)) {
                 return true;
             }
-            if (character >= '0' && character <= '9' && (this.type == CharacterClass.letterOrNumber || this.type == CharacterClass.number)) {
+            if (character >= '0' && character <= '9' && (this.type === CharacterClass.letterOrNumber || this.type === CharacterClass.number)) {
                 return true;
             }
-            if (this.type == CharacterClass.custom && this.characters.indexOf(character) != -1) {
+            if (this.type === CharacterClass.custom && this.characters.indexOf(character) !== -1) {
                 return true;
             }
             return false;
