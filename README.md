@@ -35,7 +35,7 @@ class RegistrationNumberTokenizer extends Compiler.Tokenizer<string> {
             
         inCodeFirstPart.whenNumber().thenSameState();
         let inCodeLastPart = inCodeFirstPart.when('-').thenNewState();
-        start.whenAnything().error('Registration number must start with "C" character and have some numbers after it, before a dash.');
+        inCodeFirstPart.whenAnything().error('Registration number must start with "C" character and have some numbers after it, before a dash.');
        
         inCodeLastPart.whenNumber().thenSameState();
         inCodeLastPart.whenAnything().returns('reg');
@@ -77,7 +77,7 @@ let inVowels = start.when('aeiou').thenNewState();
 
 Order matters, and therefore earlier transitions are always considered before later transitions.
 
-## Transitioning Into New states
+## Transitioning Into New States
 
 The state machine always starts from the `start` state provided in the `register` method that you are implementing.
 
@@ -160,7 +160,7 @@ inRange.whenAnything().ignore(true).returns('range');
 
 The above permits ranges like `12:34` as well as unbounded ranges like `12:`, `:34` and `:`.
 
-### Custom Token Types
+## Custom Token Types
 
 You can use a numeric type, an enum or any other type as the type which classifies a token:
 
