@@ -7,34 +7,34 @@ class SyntaxParser {
 
     private tokens: Compiler.TokenQueue<ScriptTokenType> = null;
 
-	public parse(code: string): ScriptStatement[] {
-	    let tokenizer = new ScriptTokenizer(); // class ScriptTokenizer extends Compiler.Tokenizer<ScriptTokenType> { ... }
-	    this.tokens = tokenizer.tokenize(code);
-	    return this.parseCommands();
-	}
+    public parse(code: string): ScriptStatement[] {
+        let tokenizer = new ScriptTokenizer(); // class ScriptTokenizer extends Compiler.Tokenizer<ScriptTokenType> { ... }
+        this.tokens = tokenizer.tokenize(code);
+        return this.parseCommands();
+    }
 
-	private parseCommands(): ScriptStatement[] {
-	    let result = [];
-	    while (this.tokens.position < this.tokens.tokens.length) {
-	        result.push(this.parseStatement());
-	    }
-	    return result;
-	}
+    private parseCommands(): ScriptStatement[] {
+        let result = [];
+        while (this.tokens.position < this.tokens.tokens.length) {
+            result.push(this.parseStatement());
+        }
+        return result;
+    }
 
-	private parseStatement(): ScriptStatement {
-	    let name = this.tokens.peekValue(ScriptTokenType.identifier).toLowerCase();
-	    if (name === 'repeat') {
-	        return this.parseRepeatStatement(); // Examine token queue according to how a repeat statement should look like
-	    } else if (name === 'if') {
-	        return this.parseIfStatement(); // Examine token queue according to how an if statement should look like
-	    } else if (name === 'set') {
-	        return this.parseSetStatement(); // Examine token queue according to how a set statement should look like
-	    } else {
-	        return this.parseCommandStatement(); // Examine token queue according to how a command statement should look like
-	    }
-	}
+    private parseStatement(): ScriptStatement {
+        let name = this.tokens.peekValue(ScriptTokenType.identifier).toLowerCase();
+        if (name === 'repeat') {
+            return this.parseRepeatStatement(); // Examine token queue according to how a repeat statement should look like
+        } else if (name === 'if') {
+            return this.parseIfStatement(); // Examine token queue according to how an if statement should look like
+        } else if (name === 'set') {
+            return this.parseSetStatement(); // Examine token queue according to how a set statement should look like
+        } else {
+            return this.parseCommandStatement(); // Examine token queue according to how a command statement should look like
+        }
+    }
 
-	// ...etc
+    // ...etc
 }
 ```
 
@@ -46,9 +46,9 @@ Given this code, a function definition:
 
 ```vb
 function testFunction(name: string, value: int) {
-	command1();
-	command2();
-	command3();
+    command1();
+    command2();
+    command3();
 }
 ```
 
@@ -56,76 +56,76 @@ The above can be parsed via this proposed syntax parsing definition:
 
 ```typescript
 let parameter = definitions
-	.register('parameter')
-	.token(t => t.expect().type('idenfifier').storeValueIn('name'))
-	.token(t => t.expect().type('colon'))
-	.token(t => t.expect().type('identifier').storeValueIn('dataType'));
-	
+    .register('parameter')
+    .token(t => t.expect().type('idenfifier').storeValueIn('name'))
+    .token(t => t.expect().type('colon'))
+    .token(t => t.expect().type('identifier').storeValueIn('dataType'));
+    
 let parameters = definitions
-	.register('parameterList')
-	.token(t => t.while().type('identifier').rewind().parse(parameter).asList('parameters'));
+    .register('parameterList')
+    .token(t => t.while().type('identifier').rewind().parse(parameter).asList('parameters'));
 
 let command = definitions
-	.register('command')
-	.token(t => t.expect().type('identifier').storeValueIn('name'))
-	.token(t => t.expect().type('leftBracket'))
-	.token(t => t.expect().type('rightBracket'))
-	.token(t => t.expect().type('semiColon'));
-	
+    .register('command')
+    .token(t => t.expect().type('identifier').storeValueIn('name'))
+    .token(t => t.expect().type('leftBracket'))
+    .token(t => t.expect().type('rightBracket'))
+    .token(t => t.expect().type('semiColon'));
+    
 let commands = definitions
-	.register('commandList')
-	.token(t => t.while().type('identifier').rewind().parse(command).asList('commands'));
-	
+    .register('commandList')
+    .token(t => t.while().type('identifier').rewind().parse(command).asList('commands'));
+    
 let func = definitions
-	.register('function')
-	.token(t => t.expect().type('identifier').expectValue('function'))
-	.token(t => t.expect().type('identifier').storeValueIn('name'))
-	.token(t => t.expect().type('leftBracket'))
-	.token(t => t.if().type('idenfier').parse(parameters).storeValueIn('parameters'))
-	.token(t => t.expect().type('rightBracket'))
-	.token(t => t.expect().type('leftCurly'))
-	.token(t => t.if().type('identifier').parse(commands).storeValueIn('commands'))
-	.token(t => t.expect().type('rightCurly'));
+    .register('function')
+    .token(t => t.expect().type('identifier').expectValue('function'))
+    .token(t => t.expect().type('identifier').storeValueIn('name'))
+    .token(t => t.expect().type('leftBracket'))
+    .token(t => t.if().type('idenfier').parse(parameters).storeValueIn('parameters'))
+    .token(t => t.expect().type('rightBracket'))
+    .token(t => t.expect().type('leftCurly'))
+    .token(t => t.if().type('identifier').parse(commands).storeValueIn('commands'))
+    .token(t => t.expect().type('rightCurly'));
 ```
 
 And the above definition would create a JSON object like this:
 
 ```json
 [{
-	"type": "function",
-	"name": "testFunction",
-	"parameters": {
-		"type": "parameterList",
-		"parameters": [
-			{
-				"type": "parameter",
-				"name": "name",
-				"dataType": "string"
-			},
-			{
-				"type": "parameter",
-				"name": "value",
-				"dataType": "int"
-			}
-		]
-	},
-	"commands": {
-		"type": "commandList",
-		"commands": [
-			{
-				"type": "command",
-				"name": "command1"
-			},
-			{
-				"type": "command",
-				"name": "command2"
-			},
-			{
-				"type": "command",
-				"name": "command3"
-			}
-		]
-	}
+    "type": "function",
+    "name": "testFunction",
+    "parameters": {
+        "type": "parameterList",
+        "parameters": [
+            {
+                "type": "parameter",
+                "name": "name",
+                "dataType": "string"
+            },
+            {
+                "type": "parameter",
+                "name": "value",
+                "dataType": "int"
+            }
+        ]
+    },
+    "commands": {
+        "type": "commandList",
+        "commands": [
+            {
+                "type": "command",
+                "name": "command1"
+            },
+            {
+                "type": "command",
+                "name": "command2"
+            },
+            {
+                "type": "command",
+                "name": "command3"
+            }
+        ]
+    }
 }]
 ```
 

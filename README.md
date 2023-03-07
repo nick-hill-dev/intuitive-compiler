@@ -53,12 +53,12 @@ let result = tokenizer.tokenize('C123-99');
 alert(JSON.stringify(result.tokens)); // [ { "type": "reg", "value": "C123-99" } ]
 ```
 
-### Features
+## Features
 
 - Define your own programming languages and convert strings into lists of tokens.
 - Generic token type allowing your tokens to be of any type such as string, number, enum...etc.
-- Fluent interface for building states and transitions as part of a DFA state machine tokenizer.
-- Handle errors with unexpected input.
+- Fluent interface for building states and transitions, manifesting as a DFA state machine tokenizer.
+- Handle errors with unexpected input or unexpected end of input.
 - Tiny library with minimal footprint.
 - Fully documented with JSDoc, integrated with IntelliSense in Visual Studio Code.
 
@@ -81,7 +81,7 @@ Order matters, and therefore earlier transitions are always considered before la
 
 The state machine always starts from the `start` state provided in the `register` method that you are implementing.
 
-In any description, use `thenNewState` to transition into a new state, `thenSameState` to remain in the same state or `then(state)` to transition into a specific state (that was previously created elsewhere via `thenNewState`).
+In any transition description, use `thenNewState` to transition into a new state, `thenSameState` to remain in the same state or `then(state)` to transition into a specific state (that was previously created elsewhere via `thenNewState`).
 
 ```js
 // Example 1: While we continue to encounter numbers, remain in the same state
@@ -130,10 +130,10 @@ inString.whenInputEnds().error('Expected string to end with a quote character.')
 If you want to parse strings like `"this string"` and `"A string \" with escaped quotes"`:
 
 ```js
-let inString = start.when('"').ignore().thenNewState(); // Don't include " in the start of the string token value
+let inString = start.when('"').ignore().thenNewState(); // Prevents " character from being a part of the token value
 
 inString.whenInputEnds().error('Expected string to end with a quote character.');
-inString.when('"').ignore().returns('string'); // Don't include " in the end of the string token value
+inString.when('"').ignore().returns('string'); // Prevents " character from being a part of the token value
 let inStringEscaped = inString.when('\\').ignore().thenNewState();
 inString.whenAnything().thenSameState();
 
