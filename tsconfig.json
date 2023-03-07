@@ -10,7 +10,7 @@
     "sourceRoot": "../src",
     "rootDir": "./src/",
     "outDir": "./bin/",
-    "outFile": "./bin/compiler.js",
+    "outFile": "./bin/intuitiveCompiler.js",
     "noEmitOnError": true,
     "composite": true,
     "declaration": true,
