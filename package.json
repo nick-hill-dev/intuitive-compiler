@@ -1,0 +1,21 @@
+{
+  "name": "intuitive-compiler",
+  "version": "1.0.0",
+  "description": "Define your own compiler and easily convert strings of source code into lists of tokens.",
+  "bin": {
+    "compiler": "bin/compiler.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nick-hill-dev/intuitive-compiler.git"
+  },
+  "keywords": [
+    "parser"
+  ],
+  "author": "Nick Hill",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nick-hill-dev/intuitive-compiler/issues"
+  },
+  "homepage": "https://github.com/nick-hill-dev/intuitive-compiler#readme"
+}
